@@ -108,9 +108,9 @@ setnames(features, names(features), c("featureNum", "featureName"))
 # subset only measurements for the mean and standard deviation.
 features <- features[grepl("mean|std", featureName)]
 
-features$featureCol <- features[, paste0("V", featureNum)]
+features$featureCode <- features[, paste0("V", featureNum)]
 
-select <- c(key(dt), features$featureCol)
+select <- c(key(dt), features$featureCode)
 dt <- dt[, select, with=FALSE]
 
 
@@ -129,10 +129,10 @@ dt <- merge(dt, activity, by="activityNum", all.x=TRUE)
 setkey(dt, subject, activityNum, activityName)
 
 # melt the data.table to reshape it from a short and wide format to a tall and narrow format.
-dt <- data.table(melt(dt, key(dt), variable.name="featureCol"))
+dt <- data.table(melt(dt, key(dt), variable.name = "featureCode"))
 
 # merge activity name
-dt <- merge(dt, features[, list(featureNum, featureCol, featureName)], by="featureCol", all.x=TRUE)
+dt <- merge(dt, features[, list(featureNum, featureCode, featureName)], by="featureCode", all.x=TRUE)
 
 # create a new variable, 'activity' that is equivalent to 'activityName'as a factor class. 
 dt$activity <- factor(dt$activityName)
@@ -140,52 +140,63 @@ dt$activity <- factor(dt$activityName)
 # create a new variable, 'feature' that is equivalent to 'featureName'as a factor class.
 dt$feature <- factor(dt$featureName)
 
+# seperate features from  featureName  using the helper function  grepthis .
+grepthis <- function (regex) {
+        grepl(regex, dt$feature)
+}
+
 # features with 1 category 
-dt$jerkFeature <- factor(grepl("Jerk", dt$feature), labels=c(NA, "Jerk")) 
-dt$magnitudeFeature <- factor(grepl("Mag", dt$feature), labels=c(NA, "Magnitude")) 
+dt$jerkFeature <- factor(grepthis("Jerk"), labels = c(NA, "Jerk")) 
+dt$magnitudeFeature <- factor(grepthis("Mag"), labels = c(NA, "Magnitude")) 
 
 
 # features with 2 categories 
 p <- matrix(1:2, nrow=2) 
 
-grepped <- c(grepl("^t", dt$feature), grepl("^f", dt$feature)) 
+grepped <- c(grepthis("^t"), grepthis("^f")) 
 mp <- matrix(grepped, ncol=nrow(p)) 
-dt$domainFeature <- factor(mp %*% p, labels=c("Time", "Frequency"))
+dt$domainFeature <- factor(mp %*% p, labels = c("Time", "Frequency"))
 
 
-grepped <- c(grepl("Acc", dt$feature), grepl("Gyro", dt$feature)) 
+grepped <- c(grepthis("Acc"), grepthis("Gyro")) 
 mp <- matrix(grepped, ncol=nrow(p)) 
-dt$instrumentsFeature <- factor(mp %*% p, labels=c("Accelerometer", "Gyroscope")) 
+dt$instrumentsFeature <- factor(mp %*% p, labels = c("Accelerometer", "Gyroscope")) 
 
 
-grepped <- c(grepl("BodyAcc", dt$feature), grepl("GravityAcc", dt$feature)) 
+grepped <- c(grepthis("BodyAcc"), grepthis("GravityAcc")) 
 mp <- matrix(grepped, ncol=nrow(p)) 
-dt$accelerationFeature <- factor(mp %*% p, labels=c("Body", "Gravity")) 
+dt$accelerationFeature <- factor(mp %*% p, labels = c(NA, "Body", "Gravity")) 
 
 
-grepped <- c(grepl("mean()", dt$feature), grepl("std()", dt$feature)) 
+grepped <- c(grepthis("mean()"), grepthis("std()")) 
 mp <- matrix(grepped, ncol=nrow(p)) 
 dt$variableFeature <- factor(mp %*% p, labels=c("Mean", "Standard Deviation")) 
-
 
 # features with 3 categories 
 p <- matrix(1:3, nrow=3) 
 
-
-grepped <- c(grepl("-X", dt$feature), grepl("-Y", dt$feature), grepl("-Z", dt$feature)) 
+grepped <- c(grepthis("-X"), grepthis("-Y"), grepthis("-Z")) 
 mp <- matrix(grepped, ncol = nrow(p)) 
 
 
 dt$axisFeature <- factor(mp %*% p, labels = c(NA, "X", "Y", "Z")) 
 
  
+# Check to make sure all possible combinations of feature  are accounted for 
+# by all possible combinations of the factor class variables.
+r1 <- nrow(dt[, .N, by=c("feature")])
+r2 <- nrow(dt[, .N, by=c("jerkFeature", "magnitudeFeature", "domainFeature", "instrumentsFeature", "accelerationFeature", "variableFeature", "axisFeature")])
+r1 == r2
+
+
 # 5. Creates a second, independent tidy data set with the average of each variable for each activity and each subject 
  
 setkey(dt, subject, activity, domainFeature, accelerationFeature, instrumentsFeature, jerkFeature, magnitudeFeature, variableFeature, axisFeature) 
 TidyDataSet <- dt[, list(count = .N, average = mean(value)), by = key(dt)] 
 
 
-# saving the tidy data set to 'TidyDataSet.txt file. 
+# saving the tidy data set to 'TidyDataSet.txt file.
+f <- file.path(path, "TidyDataSet.txt")
 write.table(TidyDataSet, "TidyDataSet.txt", sep="\t") 
 
 
