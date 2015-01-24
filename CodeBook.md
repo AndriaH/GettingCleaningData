@@ -118,7 +118,6 @@ Save to file
 ------------
 
 ```r
-```
 ## f <- file.path(path, "TidyDataSet.txt")
-## write.table(TidyDataSet, "TidyDataSet.txt", sep="\t") 
+## write.table(TidyDataSet, f, quote = FALSE, sep = "\t", row.names = FALSE 
 ```

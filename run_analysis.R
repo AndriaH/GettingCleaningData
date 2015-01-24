@@ -197,7 +197,6 @@ TidyDataSet <- dt[, list(count = .N, average = mean(value)), by = key(dt)]
 
 # saving the tidy data set to 'TidyDataSet.txt file.
 f <- file.path(path, "TidyDataSet.txt")
-write.table(TidyDataSet, "TidyDataSet.txt", sep="\t") 
-
+write.table(TidyDataSet, f, quote = FALSE, sep = "\t", row.names = FALSE)
 
 ############################### end of code ##############################
