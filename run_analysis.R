@@ -147,7 +147,7 @@ grepthis <- function (regex) {
 
 # features with 1 category 
 dt$jerkFeature <- factor(grepthis("Jerk"), labels = c(NA, "Jerk")) 
-dt$magnitudeFeature <- factor(grepthis("Mag"), labels = c(NA, "Magnitude")) 
+dt$magnitudeFeature <- factor(grepthis("Mag"), labels = c(NA, "Mag")) 
 
 
 # features with 2 categories 
@@ -155,7 +155,7 @@ p <- matrix(1:2, nrow=2)
 
 grepped <- c(grepthis("^t"), grepthis("^f")) 
 mp <- matrix(grepped, ncol=nrow(p)) 
-dt$domainFeature <- factor(mp %*% p, labels = c("Time", "Frequency"))
+dt$domainFeature <- factor(mp %*% p, labels = c("Time", "Freq"))
 
 
 grepped <- c(grepthis("Acc"), grepthis("Gyro")) 
@@ -170,7 +170,7 @@ dt$accelerationFeature <- factor(mp %*% p, labels = c(NA, "Body", "Gravity"))
 
 grepped <- c(grepthis("mean()"), grepthis("std()")) 
 mp <- matrix(grepped, ncol=nrow(p)) 
-dt$variableFeature <- factor(mp %*% p, labels=c("Mean", "Standard Deviation")) 
+dt$variableFeature <- factor(mp %*% p, labels=c("Mean", "SD")) 
 
 # features with 3 categories 
 p <- matrix(1:3, nrow=3) 

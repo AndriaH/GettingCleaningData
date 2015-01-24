@@ -42,11 +42,11 @@ str(dt)
 ## $ activity           : Factor w/ 6 levels "LAYING","SITTING",..: 1 1 1 1 1 1 1 1 1 1 ...
 ## $ feature            : Factor w/ 79 levels "fBodyAcc-mean()-X",..: 56 56 56 56 56 56 56 56 56 56 ...
 ## $ jerkFeature        : Factor w/ 2 levels NA,"Jerk": 1 1 1 1 1 1 1 1 1 1 ...
-## $ magnitudeFeature   : Factor w/ 2 levels NA,"Magnitude": 1 1 1 1 1 1 1 1 1 1 ...
-## $ domainFeature      : Factor w/ 2 levels "Time","Frequency": 1 1 1 1 1 1 1 1 1 1 ...
+## $ magnitudeFeature   : Factor w/ 2 levels NA,"Mag": 1 1 1 1 1 1 1 1 1 1 ...
+## $ domainFeature      : Factor w/ 2 levels "Time","Freq": 1 1 1 1 1 1 1 1 1 1 ...
 ## $ instrumentsFeature : Factor w/ 2 levels "Accelerometer",..: 2 2 2 2 2 2 2 2 2 2 ...
 ## $ accelerationFeature: Factor w/ 3 levels NA,"Body","Gravity": 1 1 1 1 1 1 1 1 1 1 ...
-## $ variableFeature    : Factor w/ 2 levels "Mean","Standard Deviation": 1 1 1 1 1 1 1 1 1 1 ...
+## $ variableFeature    : Factor w/ 2 levels "Mean","SD": 1 1 1 1 1 1 1 1 1 1 ...
 ## $ axisFeature        : Factor w/ 4 levels NA,"X","Y","Z": 2 2 2 2 2 2 2 2 2 2 ...
 ## - attr(*, ".internal.selfref")=<externalptr> 
 ## - attr(*, "sorted")= chr  "subject" "activity" "domainFeature" "accelerationFeature" ...
@@ -70,18 +70,42 @@ Show a few rows of the dataset
 dt
 ```
 ```
-##        featureCode subject activityNum     activityName       value featureNum               featureName         activity
-##     1:        V121       1           6           LAYING  0.03155195        121        tBodyGyro-mean()-X           LAYING
-##     2:        V121       1           6           LAYING  0.00925711        121        tBodyGyro-mean()-X           LAYING
-##     3:        V121       1           6           LAYING -0.01342439        121        tBodyGyro-mean()-X           LAYING
-##     4:        V121       1           6           LAYING -0.02495981        121        tBodyGyro-mean()-X           LAYING
-##     5:        V121       1           6           LAYING -0.02955039        121        tBodyGyro-mean()-X           LAYING
-##    ---                                                                                                                   
+##         featureCode subject activityNum     activityName       value featureNum               featureName         activity
+##      1:        V121       1           6           LAYING  0.03155195        121        tBodyGyro-mean()-X           LAYING
+##      2:        V121       1           6           LAYING  0.00925711        121        tBodyGyro-mean()-X           LAYING
+##      3:        V121       1           6           LAYING -0.01342439        121        tBodyGyro-mean()-X           LAYING
+##      4:        V121       1           6           LAYING -0.02495981        121        tBodyGyro-mean()-X           LAYING
+##      5:        V121       1           6           LAYING -0.02955039        121        tBodyGyro-mean()-X           LAYING
+##     ---                                                                                                                   
 ## 813617:        V517      30           2 WALKING_UPSTAIRS -0.28755322        517 fBodyBodyAccJerkMag-std() WALKING_UPSTAIRS
 ## 813618:        V517      30           2 WALKING_UPSTAIRS -0.32337205        517 fBodyBodyAccJerkMag-std() WALKING_UPSTAIRS
 ## 813619:        V517      30           2 WALKING_UPSTAIRS -0.32630192        517 fBodyBodyAccJerkMag-std() WALKING_UPSTAIRS
 ## 813620:        V517      30           2 WALKING_UPSTAIRS -0.37807723        517 fBodyBodyAccJerkMag-std() WALKING_UPSTAIRS
 ## 813621:        V517      30           2 WALKING_UPSTAIRS -0.28722743        517 fBodyBodyAccJerkMag-std() WALKING_UPSTAIRS
+##                           feature jerkFeature magnitudeFeature domainFeature instrumentsFeature accelerationFeature variableFeature
+##      1:        tBodyGyro-mean()-X          NA               NA          Time          Gyroscope                  NA            Mean
+##      2:        tBodyGyro-mean()-X          NA               NA          Time          Gyroscope                  NA            Mean
+##      3:        tBodyGyro-mean()-X          NA               NA          Time          Gyroscope                  NA            Mean
+##      4:        tBodyGyro-mean()-X          NA               NA          Time          Gyroscope                  NA            Mean
+##      5:        tBodyGyro-mean()-X          NA               NA          Time          Gyroscope                  NA            Mean
+##     ---                                                                                                                            
+## 813617: fBodyBodyAccJerkMag-std()        Jerk              Mag          Freq      Accelerometer                Body              SD
+## 813618: fBodyBodyAccJerkMag-std()        Jerk              Mag          Freq      Accelerometer                Body              SD
+## 813619: fBodyBodyAccJerkMag-std()        Jerk              Mag          Freq      Accelerometer                Body              SD
+## 813620: fBodyBodyAccJerkMag-std()        Jerk              Mag          Freq      Accelerometer                Body              SD
+## 813621: fBodyBodyAccJerkMag-std()        Jerk              Mag          Freq      Accelerometer                Body              SD
+##         axisFeature
+##      1:           X
+##      2:           X
+##      3:           X
+##      4:           X
+##      5:           X
+##     ---            
+## 813617:          NA
+## 813618:          NA
+## 813619:          NA
+## 813620:          NA
+## 813621:          NA
 ```
 
 Summary of variables
@@ -99,19 +123,19 @@ summary(dt)
 ##                    3rd Qu.:24.00   3rd Qu.:5.000   WALKING_DOWNSTAIRS:111074   3rd Qu.:-0.04308   3rd Qu.:425.0                     
 ##                    Max.   :30.00   Max.   :6.000   WALKING_UPSTAIRS  :121976   Max.   : 1.00000   Max.   :552.0                     
 ##                                                                                                                                     
-##               activity                       feature       jerkFeature    magnitudeFeature    domainFeature        instrumentsFeature
-## LAYING            :153576   fBodyAcc-mean()-X    : 10299   NA  :494352   NA       :587043   Time     :411960   Accelerometer:494352  
-## SITTING           :140383   fBodyAcc-mean()-Y    : 10299   Jerk:319269   Magnitude:226578   Frequency:401661   Gyroscope    :319269  
-## STANDING          :150574   fBodyAcc-mean()-Z    : 10299                                                                             
-## WALKING           :136038   fBodyAcc-meanFreq()-X: 10299                                                                             
-## WALKING_DOWNSTAIRS:111074   fBodyAcc-meanFreq()-Y: 10299                                                                             
-## WALKING_UPSTAIRS  :121976   fBodyAcc-meanFreq()-Z: 10299                                                                             
-##                             (Other)              :751827                                                                             
-## accelerationFeature           variableFeature   axisFeature
-## NA     :319269      Mean              :473754   NA:226578  
-## Body   :411960      Standard Deviation:339867   X :195681  
-## Gravity: 82392                                  Y :195681  
-##                                                 Z :195681  
+##               activity                       feature       jerkFeature   magnitudeFeature domainFeature     instrumentsFeature
+## LAYING            :153576   fBodyAcc-mean()-X    : 10299   NA  :494352   NA :587043       Time:411960   Accelerometer:494352  
+## SITTING           :140383   fBodyAcc-mean()-Y    : 10299   Jerk:319269   Mag:226578       Freq:401661   Gyroscope    :319269  
+## STANDING          :150574   fBodyAcc-mean()-Z    : 10299                                                                      
+## WALKING           :136038   fBodyAcc-meanFreq()-X: 10299                                                                      
+## WALKING_DOWNSTAIRS:111074   fBodyAcc-meanFreq()-Y: 10299                                                                      
+## WALKING_UPSTAIRS  :121976   fBodyAcc-meanFreq()-Z: 10299                                                                      
+##                             (Other)              :751827                                                                      
+## accelerationFeature variableFeature axisFeature
+## NA     :319269      Mean:473754     NA:226578  
+## Body   :411960      SD  :339867     X :195681  
+## Gravity: 82392                      Y :195681  
+##                                     Z :195681 
 ```
 
 Save to file
